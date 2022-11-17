@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:123456@localhost/alchemy"
@@ -17,24 +18,28 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
 
-    def __repr__(self):
+    def __repr__(self): #representation
         return '<User %r>' % self.username
     
-    # def __init__(self, username, email):
-    #     self.username = username
-    #     self.email = email
 
-class BlogPost(db.Model):
+class Blogpost(db.Model):
   __tablename__ = "blogposts"
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(80), unique=True, nullable=False)
   author = db.Column(db.String(80), nullable=False)
   content = db.Column(db.Text, nullable=False)
-  
+  created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
   def __repr__(self):
-    return '<BlogPost %r>' % self.title
+    return f"Blogpost: {self.title}" # F allows string interpolation of python variables
+
+  def __init__(self, title, author, content): # constructor to create an object fromn a class
+    self.title = title
+    self.author = author
+    self.content = content
 
 # routes
+
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -63,7 +68,9 @@ def create_user():
     new_user = User(username=data['username'], email=data['email'])
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({'message': 'New user created!'})
+    # return jsonify({'message': 'New user created!'})
+    return repr(new_user)
+
     
 @app.route('/users/<user_id>', methods=['PUT'])
 def promote_user(user_id):
