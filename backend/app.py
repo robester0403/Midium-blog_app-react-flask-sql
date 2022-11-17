@@ -1,6 +1,10 @@
+#----------------------------------------------------------------------------#
+# Imports
+#----------------------------------------------------------------------------#
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from sqlalchemy import desc
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:123456@localhost/alchemy"
@@ -21,9 +25,11 @@ class User(db.Model):
     def __repr__(self): #representation
         return '<User %r>' % self.username
     
-
+#----------------------------------------------------------------------------#
+# Models.
+#----------------------------------------------------------------------------#
 class Blogpost(db.Model):
-  __tablename__ = "blogposts"
+  __tablename__ = 'blogposts'
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(80), unique=True, nullable=False)
   author = db.Column(db.String(80), nullable=False)
@@ -31,16 +37,71 @@ class Blogpost(db.Model):
   created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
   def __repr__(self):
-    return f"Blogpost: {self.title}" # F allows string interpolation of python variables
+    return f'Blogpost: {self.title}' # F allows string interpolation of python variables
 
   def __init__(self, title, author, content): # constructor to create an object fromn a class
     self.title = title
     self.author = author
     self.content = content
 
-# routes
+def format_blogpost(blogpost): # formatted JSON object that can be returned without another network request
+  return {
+    'title': blogpost.title,
+    'author': blogpost.author,
+    'content': blogpost.content
+  }
+
+#----------------------------------------------------------------------------#
+# Controllers.
+#----------------------------------------------------------------------------#
+@app.route('/tester', methods=['GET'])
+def hello_test():
+  return "Hello World!"
 
 
+# routes: Blogpost
+@app.route('/api/blogpost', methods=['GET'])
+def get_allposts():
+  blogposts = Blogpost.query.order_by(desc(Blogpost.created_at)).all()
+  data = []
+  for blogpost in blogposts:
+    blogpost_data = {}
+    # construct the object
+    blogpost_data['title'] = blogpost.title
+    blogpost_data['author'] = blogpost.author
+    blogpost_data['content'] = blogpost.content
+    blogpost_data['created_at'] = blogpost.created_at
+    data.append(blogpost_data)
+  return jsonify({'data': data})
+
+@app.route('/api/blogpost/<blog_id>', methods = ['GET'])
+def get_post(blog_id): # pass in the id here
+  blogpost = Blogpost.query.filter_by(id=blog_id).first()
+  if not blogpost:
+    return jsonify({'message': 'No blog post of this id was found'})
+  blogpost_data = {}
+  blogpost_data['title'] = blogpost.title
+  blogpost_data['author'] = blogpost.author
+  blogpost_data['content'] = blogpost.content
+  blogpost_data['created_at'] = blogpost.created_at
+  return jsonify({"data": blogpost_data})
+  
+
+@app.route('/api/blogpost', methods=['POST'])
+def create_post():
+  title = request.json['title']
+  author = request.json['author']
+  content = request.json['content']
+
+  blogpost = Blogpost(title, author, content)
+
+  db.session.add(blogpost)
+  db.session.commit()
+
+  return format_blogpost(blogpost) # returns info for the post created
+
+
+# routes: Users
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -91,8 +152,8 @@ def delete_user(user_id):
     return jsonify({'message': 'The user has been deleted!'})
 
 # Python terminal command doesn't work so hardcode the table creation here
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)
