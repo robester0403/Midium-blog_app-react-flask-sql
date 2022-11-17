@@ -35,6 +35,7 @@ class Blogpost(db.Model):
   author = db.Column(db.String(80), nullable=False)
   content = db.Column(db.Text, nullable=False)
   created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+  edited_at = db.Column(db.DateTime, nullable=True)
 
   def __repr__(self):
     return f'Blogpost: {self.title}' # F allows string interpolation of python variables
@@ -63,6 +64,8 @@ def hello_test():
 @app.route('/api/blogpost', methods=['GET'])
 def get_allposts():
   blogposts = Blogpost.query.order_by(desc(Blogpost.created_at)).all()
+  if not blogposts or len(blogposts) == 0:
+    return jsonify({'message': 'No blogposts found'})
   data = []
   for blogpost in blogposts:
     blogpost_data = {}
@@ -71,6 +74,7 @@ def get_allposts():
     blogpost_data['author'] = blogpost.author
     blogpost_data['content'] = blogpost.content
     blogpost_data['created_at'] = blogpost.created_at
+    blogpost_data['edited_at'] = blogpost.edited_at
     data.append(blogpost_data)
   return jsonify({'data': data})
 
@@ -84,6 +88,7 @@ def get_post(blog_id): # pass in the id here
   blogpost_data['author'] = blogpost.author
   blogpost_data['content'] = blogpost.content
   blogpost_data['created_at'] = blogpost.created_at
+  blogpost_data['edited_at'] = blogpost.edited_at
   return jsonify({"data": blogpost_data})
   
 
@@ -100,6 +105,31 @@ def create_post():
 
   return format_blogpost(blogpost) # returns info for the post created
 
+@app.route('/api/blogpost/<blog_id>', methods=['PUT'])
+def update_post(blog_id):
+  blogpost = Blogpost.query.filter_by(id=blog_id).first()
+  if not blogpost:
+    return jsonify({'message': 'No blog post of this id was found'})
+  title = request.json['title']
+  author = request.json['author']
+  content = request.json['content']
+
+  blogpost.title = title
+  blogpost.author = author
+  blogpost.content = content
+  blogpost.edited_at = datetime.utcnow()
+  db.session.commit()
+  
+  return {'data': format_blogpost(blogpost)}
+
+@app.route('/api/blogpost/<blog_id>', methods=['DELETE'])
+def delete_post(blog_id):
+  blogpost = Blogpost.query.filter_by(id=blog_id).first()
+  if not blogpost:
+    return jsonify({'message': 'No blog post of this id was found'})
+  db.session.delete(blogpost)
+  db.session.commit()
+  return jsonify({'message': f'Blog post {blog_id} was deleted'})
 
 # routes: Users
 @app.route('/users', methods=['GET'])
@@ -154,6 +184,7 @@ def delete_user(user_id):
 # Python terminal command doesn't work so hardcode the table creation here
 # with app.app_context():
 #     db.create_all()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
