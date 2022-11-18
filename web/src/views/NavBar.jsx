@@ -18,8 +18,7 @@ const NavBar = () => {
     return (
       <Tab
         onClick={(event) => {
-          event.preventDefault();
-          navigate(`/${props.linkURL}`);
+          navigate(`/${props.linkurl}`);
         }}
         {...props}
       />
@@ -35,7 +34,8 @@ const NavBar = () => {
         scrollButtons="auto"
         aria-label="nav tabs for midium"
       >
-        <LinkTab
+        we need to fix this linkTab to something better
+        <Tab
           icon={
             <IconButton sx={{ padding: "0px", margin: "0px", minWidth: "0px" }}>
               <AddIcon />
@@ -43,13 +43,14 @@ const NavBar = () => {
           }
           sx={{ padding: "0px", margin: "0px", minWidth: "0px" }}
           aria-label="add"
-          linkURL="createposts"
+          onClick={(event) => {
+            navigate("createposts");
+          }}
         />
-        <LinkTab label="For You" linkURL="" />
-        <LinkTab label="Midium" linkURL="antimedium" />
-
-        <LinkTab label="About Me" href="/" />
-        <LinkTab label="Logs & Roadmap" href="/" />
+        <LinkTab label="For You" linkurl="" />
+        <LinkTab label="Midium" linkurl="antimedium" />
+        <LinkTab label="About Me" linkurl="" />
+        <LinkTab label="Logs & Roadmap" linkurl="" />
       </Tabs>
     </Box>
   );
