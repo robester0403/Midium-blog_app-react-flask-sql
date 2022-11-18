@@ -6,21 +6,28 @@ import MainPage from "./pages/MainPage";
 import Articles from "./views/Articles";
 import Antimedium from "./views/Antimedium";
 import CreatePosts from "./views/CreatePosts";
+import { MuiThemeConfig } from "./styles/MuiThemeConfig";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 
 function App() {
   document.title = "storeapp";
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="" element={<MainPage />}>
-            <Route path="/" element={<Articles />} />
-            <Route path="/antimedium" element={<Antimedium />} />
-            <Route path="/createposts" element={<CreatePosts />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <ThemeProvider theme={MuiThemeConfig}>
+        <>
+          <CssBaseline />
+          <BrowserRouter>
+            <Routes>
+              <Route path="" element={<MainPage />}>
+                <Route path="/" element={<Articles />} />
+                <Route path="/antimedium" element={<Antimedium />} />
+                <Route path="/createposts" element={<CreatePosts />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
