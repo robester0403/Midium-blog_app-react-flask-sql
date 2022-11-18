@@ -1,8 +1,8 @@
 import React from "react";
 import Header from "../views/Header";
 import NavBar from "../views/NavBar";
-import Articles from "../views/Articles";
 import styled from "styled-components";
+import { Outlet } from "react-router-dom";
 
 const MainPage = () => {
   return (
@@ -11,7 +11,7 @@ const MainPage = () => {
         <LayoutContainer>
           <Header />
           <NavBar />
-          <Articles />
+          <Outlet />
         </LayoutContainer>
       </TempPhoneContainer>
     </>
