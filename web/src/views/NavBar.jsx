@@ -19,7 +19,7 @@ function LinkTab(props) {
 }
 
 const NavBar = () => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   const navigate = useNavigate();
   const handleChange = (_, newValue) => {
     setValue(newValue);
