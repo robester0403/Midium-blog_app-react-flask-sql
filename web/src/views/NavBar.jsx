@@ -6,24 +6,24 @@ import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 
-function LinkTab(props) {
-  return (
-    <Tab
-      component="a"
-      onClick={(event) => {
-        event.preventDefault();
-      }}
-      {...props}
-    />
-  );
-}
-
 const NavBar = () => {
   const [value, setValue] = useState(1);
   const navigate = useNavigate();
   const handleChange = (_, newValue) => {
     setValue(newValue);
     // can be useful later on
+  };
+
+  const LinkTab = (props) => {
+    return (
+      <Tab
+        onClick={(event) => {
+          event.preventDefault();
+          navigate(`/${props.linkURL}`);
+        }}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -43,28 +43,10 @@ const NavBar = () => {
           }
           sx={{ padding: "0px", margin: "0px", minWidth: "0px" }}
           aria-label="add"
-          href="/createposts"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/createposts");
-          }}
+          linkURL="createposts"
         />
-        <LinkTab
-          label="For You"
-          href="/"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/");
-          }}
-        />
-        <LinkTab
-          label="Midium"
-          href="/antimedium"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/antimedium");
-          }}
-        />
+        <LinkTab label="For You" linkURL="" />
+        <LinkTab label="Midium" linkURL="antimedium" />
 
         <LinkTab label="About Me" href="/" />
         <LinkTab label="Logs & Roadmap" href="/" />
