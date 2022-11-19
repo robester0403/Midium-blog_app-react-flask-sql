@@ -17,9 +17,10 @@ const NavBar = () => {
   const LinkTab = (props) => {
     return (
       <Tab
-        onClick={(event) => {
+        onClick={(_) => {
           navigate(`/${props.linkurl}`);
         }}
+        sx={{ textTransform: "none" }}
         {...props}
       />
     );
