@@ -10,7 +10,7 @@ import { MuiThemeConfig } from "./styles/MuiThemeConfig";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 function App() {
-  document.title = "storeapp";
+  document.title = "Midium, the medium clone";
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>

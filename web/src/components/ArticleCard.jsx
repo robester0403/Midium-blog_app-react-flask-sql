@@ -10,7 +10,7 @@ const ArticleCard = ({ title, author, content }) => {
     <CardContainer>
       <div>
         <Typography variant="h5">
-          {title} <TextHighlight>{author}</TextHighlight>
+          {title} <TextHighlight>by {author}</TextHighlight>
         </Typography>
       </div>
       <Typography variant="body1" sx={{ marginBottom: "16px" }}>
