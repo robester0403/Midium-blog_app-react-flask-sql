@@ -6,24 +6,24 @@ import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 
-function LinkTab(props) {
-  return (
-    <Tab
-      component="a"
-      onClick={(event) => {
-        event.preventDefault();
-      }}
-      {...props}
-    />
-  );
-}
-
 const NavBar = () => {
   const [value, setValue] = useState(1);
   const navigate = useNavigate();
   const handleChange = (_, newValue) => {
     setValue(newValue);
     // can be useful later on
+  };
+
+  const LinkTab = (props) => {
+    return (
+      <Tab
+        onClick={(_) => {
+          navigate(`/${props.linkurl}`);
+        }}
+        sx={{ textTransform: "none" }}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -35,7 +35,8 @@ const NavBar = () => {
         scrollButtons="auto"
         aria-label="nav tabs for midium"
       >
-        <LinkTab
+        we need to fix this linkTab to something better
+        <Tab
           icon={
             <IconButton sx={{ padding: "0px", margin: "0px", minWidth: "0px" }}>
               <AddIcon />
@@ -43,31 +44,14 @@ const NavBar = () => {
           }
           sx={{ padding: "0px", margin: "0px", minWidth: "0px" }}
           aria-label="add"
-          href="/createposts"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/createposts");
+          onClick={(event) => {
+            navigate("createposts");
           }}
         />
-        <LinkTab
-          label="For You"
-          href="/"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/");
-          }}
-        />
-        <LinkTab
-          label="Midium"
-          href="/antimedium"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/antimedium");
-          }}
-        />
-
-        <LinkTab label="About Me" href="/" />
-        <LinkTab label="Logs & Roadmap" href="/" />
+        <LinkTab label="For You" linkurl="" />
+        <LinkTab label="Midium" linkurl="antimedium" />
+        <LinkTab label="About Me" linkurl="" />
+        <LinkTab label="Logs & Roadmap" linkurl="" />
       </Tabs>
     </Box>
   );

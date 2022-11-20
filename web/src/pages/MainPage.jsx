@@ -10,8 +10,10 @@ const MainPage = () => {
       <TempPhoneContainer>
         <LayoutContainer>
           <Header />
-          <NavBar />
-          <Outlet />
+          <ViewContainer>
+            <NavBar />
+            <Outlet />
+          </ViewContainer>
         </LayoutContainer>
       </TempPhoneContainer>
     </>
@@ -30,5 +32,10 @@ const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+`;
+
+const ViewContainer = styled.div`
+  padding: 0 24px;
   box-sizing: border-box;
 `;
