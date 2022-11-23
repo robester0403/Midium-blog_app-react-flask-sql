@@ -3,10 +3,12 @@
 #----------------------------------------------------------------------------#
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from datetime import datetime
 from sqlalchemy import desc
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:123456@localhost/alchemy"
 db = SQLAlchemy(app)
 
@@ -75,7 +77,7 @@ def get_allposts():
     blogpost_data['created_at'] = blogpost.created_at
     blogpost_data['edited_at'] = blogpost.edited_at
     data.append(blogpost_data)
-  return jsonify({'data': data})
+  return jsonify({'posts': data})
 
 @app.route('/api/blogpost/<blog_id>', methods = ['GET'])
 def get_post(blog_id): # pass in the id here
@@ -88,7 +90,7 @@ def get_post(blog_id): # pass in the id here
   blogpost_data['content'] = blogpost.content
   blogpost_data['created_at'] = blogpost.created_at
   blogpost_data['edited_at'] = blogpost.edited_at
-  return jsonify({"data": blogpost_data})
+  return jsonify({"posts": blogpost_data})
   
 
 @app.route('/api/blogpost', methods=['POST'])
@@ -119,7 +121,7 @@ def update_post(blog_id):
   blogpost.edited_at = datetime.utcnow()
   db.session.commit()
   
-  return {'data': format_blogpost(blogpost)}
+  return {'posts': format_blogpost(blogpost)}
 
 @app.route('/api/blogpost/<blog_id>', methods=['DELETE'])
 def delete_post(blog_id):
